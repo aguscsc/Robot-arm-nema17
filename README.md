@@ -65,12 +65,16 @@ $$\theta_1 = \text{atan2}(Y, X)$$
 
 **2. 2D Plane Mapping**
 To solve for the shoulder and elbow, we map the 3D target into a 2D side-view plane. We calculate the horizontal distance ($r$), adjust for the base height ($Z_{offset}$), and find the direct line-of-sight distance from the shoulder to the target ($D$):
+
 $$r = \sqrt{X^2 + Y^2}$$
+
 $$Z_{offset} = Z - L_0$$
+
 $$D = \sqrt{r^2 + Z_{offset}^2}$$
 
 **3. Shoulder Angle ($\theta_2$)**
 The shoulder angle requires finding the angle of elevation to the target ($\alpha$) and the internal angle of the arm's geometry using the Law of Cosines ($\beta$). We use the standard "Elbow Up" configuration to keep the arm clear of the workspace:
+
 $$\alpha = \text{atan2}(Z_{offset}, r)$$
 
 $$\beta = \arccos\left(\frac{L_1^2 + D^2 - L_2^2}{2 L_1 D}\right)$$
@@ -78,7 +82,9 @@ $$\beta = \arccos\left(\frac{L_1^2 + D^2 - L_2^2}{2 L_1 D}\right)$$
 $$\theta_2 = \alpha + \beta$$
 
 **4. Elbow Angle ($\theta_3$)**
-The elbow angle is derived by finding the internal angle ($\gamma$) using the Law of Cosines. To get the physical motor angle relative to the extended bicep, we subtract the internal angle from $180^\circ$ ($\pi$ radians):
+The elbow angle is derived by finding the internal angle ($\gamma$) using the Law of Cosines. To get the physical motor angle relative to the extended bicep, we subtract the internal angle from 
+
+$180^\circ$ ($\pi$ radians):
 
 $$\gamma = \arccos\left(\frac{L_1^2 + L_2^2 - D^2}{2 L_1 L_2}\right)$$
 
