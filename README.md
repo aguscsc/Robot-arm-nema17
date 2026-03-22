@@ -2,6 +2,7 @@
 
 **Author:** Agustín Torres  
 **Background:** Electronics Engineering Student, Universidad de Concepción (UdeC)
+
 **Status:** Active Development (Phase 1: Kinematic Modeling)
 
 ## Project Overview
