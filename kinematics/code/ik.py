@@ -3,12 +3,12 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 
 RECORD = 0
+L_0 = 5
+L_1 = 15
+L_2 = 15
 # ---IK Math ---
 def calculate_ik(x, y, z):
-    L_0 = 5
-    L_1 = 10
-    L_2 = 10
-    
+ 
     r = math.sqrt(x**2 + y**2)
     h = z - L_0
     D = math.sqrt(r**2 + h**2)
@@ -34,7 +34,7 @@ def calculate_ik(x, y, z):
     #t1_deg = math.degrees(theta1)
     t2_deg = math.degrees(theta2)
     t3_deg = math.degrees(theta3)
-    
+    print(f"theta1: {theta1}, theta2: {theta2}, theta3: {theta3}") 
     # Joint Limits Check
     if t3_deg < -150 or t3_deg > 150:
         print(f"Error: Elbow hyperextension ({t3_deg:.1f} deg)")
@@ -47,9 +47,6 @@ def calculate_ik(x, y, z):
 
 # --- Forward Kinematics for Plotting ---
 def get_joint_positions(th1, th2, th3):
-    L_0 = 5
-    L_1 = 10
-    L_2 = 10
     
     # Joint 0: Origin
     x0, y0, z0 = 0, 0, 0
