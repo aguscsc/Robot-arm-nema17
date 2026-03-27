@@ -1,15 +1,18 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+
 def generate_workspace(L0, L1, L2):
     print(f"Calculating workspace for L0={L0}m, L1={L1}m, L2={L2}m...")
 
     # 1. Define Physical Joint Limits (in radians)
-    # NOTE: You will need to adjust these limits based on where your 
+    # NOTE: You will need to adjust these limits based on where your
     # 3D-printed PLA parts physically collide with each other!
-    theta1 = np.linspace(-np.pi, np.pi, 60)      # Base: Full 360 rotation
-    theta2 = np.linspace(0, np.pi, 50)           # Shoulder: 0 to 180 degrees
-    theta3 = np.linspace(-np.pi + 0.1, -0.1, 50) # Elbow: Prevents bending backwards into L1
+    theta1 = np.linspace(-np.pi, np.pi, 60)  # Base: Full 360 rotation
+    theta2 = np.linspace(0, np.pi, 50)  # Shoulder: 0 to 180 degrees
+    theta3 = np.linspace(
+        -np.pi + 0.1, -0.1, 50
+    )  # Elbow: Prevents bending backwards into L1
 
     # 2. Create a 3D grid of all angle combinations
     T1, T2, T3 = np.meshgrid(theta1, theta2, theta3)
@@ -38,25 +41,28 @@ def generate_workspace(L0, L1, L2):
 
     # 5. Plotting the 3D Point Cloud
     fig = plt.figure(figsize=(10, 8))
-    ax = fig.add_subplot(111, projection='3d')
-    
+    ax = fig.add_subplot(111, projection="3d")
+
     # Use a scatter plot with a very small point size (s=1) and low alpha for transparency
-    scatter = ax.scatter(X_valid, Y_valid, Z_valid, c=Z_valid, cmap='viridis', s=1, alpha=0.1)
-    
+    scatter = ax.scatter(
+        X_valid, Y_valid, Z_valid, c=Z_valid, cmap="viridis", s=1, alpha=0.1
+    )
+
     # Formatting the plot
-    ax.set_title('3-DOF Robotic Arm Reachable Workspace')
-    ax.set_xlabel('X (meters)')
-    ax.set_ylabel('Y (meters)')
-    ax.set_zlabel('Z (meters)')
-    
+    ax.set_title("3-DOF Robotic Arm Reachable Workspace")
+    ax.set_xlabel("X (meters)")
+    ax.set_ylabel("Y (meters)")
+    ax.set_zlabel("Z (meters)")
+
     # Set equal axis limits to preserve the true physical shape
     max_reach = L1 + L2
     ax.set_xlim([-max_reach, max_reach])
     ax.set_ylim([-max_reach, max_reach])
     ax.set_zlim([0, L0 + max_reach])
-    
-    fig.colorbar(scatter, ax=ax, label='Z Height (meters)', shrink=0.5)
+
+    fig.colorbar(scatter, ax=ax, label="Z Height (meters)", shrink=0.5)
     plt.show()
 
+
 # Run the simulation with your current arm dimensions
-generate_workspace(L0=0.05, L1=0.15, L2=0.15)
+generate_workspace(L0=0.05, L1=0.1, L2=0.1)
