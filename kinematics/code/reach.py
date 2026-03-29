@@ -6,8 +6,6 @@ def generate_workspace(L0, L1, L2):
     print(f"Calculating workspace for L0={L0}m, L1={L1}m, L2={L2}m...")
 
     # 1. Define Physical Joint Limits (in radians)
-    # NOTE: You will need to adjust these limits based on where your
-    # 3D-printed PLA parts physically collide with each other!
     theta1 = np.linspace(-np.pi, np.pi, 60)  # Base: Full 360 rotation
     theta2 = np.linspace(0, np.pi, 50)  # Shoulder: 0 to 180 degrees
     theta3 = np.linspace(
