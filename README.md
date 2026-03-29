@@ -223,5 +223,5 @@ graph LR
 ```
 
 ## Baseline Tuning via Isolated Step Response (TODO)
-
+![arm gif](/simulation/MATLAB/arm.gif)
 ---
