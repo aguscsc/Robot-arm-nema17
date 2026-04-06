@@ -20,26 +20,41 @@ if __name__ == "__main__":
     # Input Loop (Only advances when a point is valid)
     valid_points = 0
     while valid_points < points:
-        coords = input(f"Point {valid_points+1} - Insert target coordinates (x y z): ").split()
+        # Ask for 4 values now
+        coords = input(f"Point {valid_points+1} - Insert (x y z) and speed (1=Slow, 2=Med, 3=Fast): ").split()
         
-        if len(coords) == 3:
+        if len(coords) == 4:
             try:
                 target_x = float(coords[0])
                 target_y = float(coords[1])
                 target_z = float(coords[2])
+                speed_choice = int(coords[3])
 
-                print(f"Calculating trajectory to ({target_x}, {target_y}, {target_z})...")
+                # Map the user's choice to an actual Rad/s limit
+                if speed_choice == 1:
+                    target_speed = 0.5  # Slow and precise
+                elif speed_choice == 2:
+                    target_speed = 1.5  # Cruising speed
+                elif speed_choice == 3:
+                    target_speed = 3.0  # Max physical limit
+                else:
+                    print("Invalid speed! Defaulting to Medium (2).")
+                    target_speed = 1.5
+
+                print(f"Calculating trajectory to ({target_x}, {target_y}, {target_z}) at Mode {speed_choice}...")
                 
-                # Pre-Flight Check
                 target_angles = s_curve.calculate_ik(target_x, target_y, target_z)
                 print(f"Target Validated! Final Motor Angles: {np.degrees(target_angles).round(2)}°")
 
-                # Generate path
+                # Pass the mapped speed to the generator
                 t, trajectory = s_curve.generate_minimum_jerk_trajectory(
                     current_angles,
                     target_angles,
+                    speed_rad_s=target_speed,
                     time_step=TIME_STEP
                 )
+            
+                # ... rest of your appending and exporting logic stays the same
                 
                 # Append to master list and update memory
                 routine_trajectories.append(trajectory)
@@ -53,7 +68,7 @@ if __name__ == "__main__":
                 print(f"\n[PRE-FLIGHT ABORTED]: {e}")
                 print("Please enter a valid, physically reachable coordinate to continue.")
         else:
-            print("Please enter exactly three numbers.")
+            print("Please enter exactly four numbers.")
 
     # --- Merge, Export, and Animate the Full Routine ---
     if routine_trajectories:

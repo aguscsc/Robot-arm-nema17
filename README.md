@@ -10,7 +10,7 @@ This repository documents the design, digital twin simulation, and embedded hard
 
 Designed with the strict requirements of heavy industrial automation and autonomous material handling in mind, the primary focus of this project is the rigorous application of modern control systems theory. By validating kinematics and actuator dynamics in a simulated environment first, the architecture guarantees safe, predictable motion profiles and strict adherence to physical hardware constraints before code is ever flashed to the microcontroller.
 
-![arm gif](/simulation/MATLAB/arm.gif)
+![arm gif](/simulation/MATLAB/arm_pick_up.gif)
 
 > 📄 **Deep Dive:** For full equation derivations, payload torque characterizations, and detailed PID tuning methodology, please reference the **[Technical Engineering Report](docs/arm.md)**.
 
@@ -78,6 +78,23 @@ To avoid jerking during movement, a quintic polinomial approach was used to cont
 
 This is also avaliable at [kinematics/code](kinematics/code)
 
+### Robot routines 
+Using the scripts [routine_maker.py and s_curve.py](kinematics/code), the user can program routines with the desired points and velocity. The robot has 3 speed profiles: slow (0.5 rad/s), medium (2 rad/s) and fast (3 rad/s)
+
+```
+python routine_maker.py
+How many points should the robot hit: "The number of points inside the routine"
+Point 1 - Insert (x y z) and speed (1=Slow, 2=Med, 3=Fast): "x y z speed"
+Calculating trajectory to (10.0, 10.0, 10.0) at Mode "the speed you specified"...
+Target Validated! Final Motor Angles: [ \theta_1 \theta_2 \theta_3 ]°
+Motion time: "time" seconds
+
+[SUCCESS] Full routine generated! Total waypoints: "Total waypoints of your routine"
+Do you want to save the routine for Simulink (.mat)? Y(1) / N(0): 
+Do you want to record the movement to a GIF? Y(1) / N(0): 
+```
+
+---
 ## Development Roadmap
 
 1.  **Kinematic Prototyping (Python):**
@@ -89,4 +106,8 @@ This is also avaliable at [kinematics/code](kinematics/code)
 3.  **Hardware Deployment (C++ / ESP32):**
     * Translation of simulated control logic into real-time step generation for the motor drivers.
     * Handling of physical constraints, serial communication, and edge-case safety stops.
+
+**Possible future additions**
+- Graphical interface to control the robot
+- Routine definition via machine learning
 -----

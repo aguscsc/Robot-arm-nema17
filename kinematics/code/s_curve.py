@@ -36,14 +36,13 @@ def calculate_ik(x, y, z):
 
     # Shift theta3 so 0 degrees is perfectly straight with the upper arm
     theta3 = gamma - math.pi
-    print(f"angles {theta1}, {theta2}, {theta3}")
     # Adjusted Mechanical Limits (assuming 0 is straight up)
     limits = {
         "theta1": (-math.pi, math.pi),  # Base: -180 to 180
         "theta2": (0, math.pi ),  # Shoulder:  0 to 180 (Horizontal)
         "theta3": (
-            -math.pi / 2,
-            math.pi / 2,
+            -math.pi *0.833,
+            math.pi * 0.833,
         ),  # Elbow: -90 (Bent Back) to 90 (Bent Forward)
     }
 
@@ -64,13 +63,15 @@ def calculate_ik(x, y, z):
 
 
 # --- Trajectory Generator ---
-def generate_minimum_jerk_trajectory(start_angles, end_angles, time_step=0.02):
+# Added speed_rad_s parameter (default is 2.0 for backwards compatibility)
+def generate_minimum_jerk_trajectory(start_angles, end_angles, speed_rad_s=2.0, time_step=0.02):
     delta = end_angles - start_angles
     max_delta = abs(max(delta))
-    # may change later to add speed profiles, for now 3 rad/s is the fastest the robot can go
-    # also the peak velocity occurs at thau = 0.5
-    total_time = max(0.5, 1.875 * max_delta / 0.7)
-    print(f"this will take {total_time} seconds")
+    
+    # Replaced 2.0 with the user's chosen speed limit
+    total_time = max(0.5, 1.875 * max_delta / speed_rad_s)
+    print(f"Motion time: {total_time:.2f} seconds")
+    
     t = np.arange(0, total_time + time_step, time_step)
     tau = t / total_time
     s_curve = 10 * tau**3 - 15 * tau**4 + 6 * tau**5
