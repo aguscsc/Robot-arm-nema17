@@ -69,7 +69,7 @@ def generate_minimum_jerk_trajectory(start_angles, end_angles, time_step=0.02):
     max_delta = abs(max(delta))
     # may change later to add speed profiles, for now 3 rad/s is the fastest the robot can go
     # also the peak velocity occurs at thau = 0.5
-    total_time = max(0.5, 1.875 * max_delta / 1.0)
+    total_time = max(0.5, 1.875 * max_delta / 0.5)
     print(f"this will take {total_time} seconds")
     t = np.arange(0, total_time + time_step, time_step)
     tau = t / total_time
