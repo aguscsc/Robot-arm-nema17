@@ -68,7 +68,15 @@ python ik.py
 
 You will be prompted for recording option and target coordinates `(X Y Z)`. The script will validate the workspace and generate a trajectory visualization (if you choose to) `ik_simulation.gif`.
 
-![kinematics simulation](kinematics/code/ik_simulation.gif)
+### S curve
+To avoid jerking during movement, a quintic polinomial approach was used to control initial and ending position, speed and acceleration.
+
+<p float="left">
+<img src="kinematics/code/ik_simulation.gif" width="450" alt="IK Simulation" />
+<img src="kinematics/code/s_curve_simulation.gif" width="350" alt="S-Curve Simulation" />
+</p>
+
+This is also avaliable at [kinematics/code](kinematics/code)
 
 ## Development Roadmap
 
