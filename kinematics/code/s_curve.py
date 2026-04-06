@@ -26,24 +26,21 @@ def calculate_ik(x, y, z):
     cos_beta = max(-1.0, min(1.0, (L_1**2 + D**2 - L_2**2) / (2 * L_1 * D)))
     alpha = math.atan2(h, r)
     beta = math.acos(cos_beta)
-    theta2_math = alpha + beta
+    theta2 = alpha + beta
 
     # Elbow Angle (Math derivation)
     cos_gamma = max(-1.0, min(1.0, (L_1**2 + L_2**2 - D**2) / (2 * L_1 * L_2)))
     gamma = math.acos(cos_gamma)
 
     # --- MOTOR COORDINATE MAPPING ---
-    # Shift theta2 so 0 degrees is straight UP (Z-axis)
-    theta2 = (math.pi / 2) - theta2_math
 
     # Shift theta3 so 0 degrees is perfectly straight with the upper arm
-    # Positive values bend the arm "forward/down"
-    theta3 = math.pi - gamma
-
+    theta3 = gamma - math.pi
+    print(f"angles {theta1}, {theta2}, {theta3}")
     # Adjusted Mechanical Limits (assuming 0 is straight up)
     limits = {
         "theta1": (-math.pi, math.pi),  # Base: -180 to 180
-        "theta2": (0, math.pi / 2),  # Shoulder: 0 (Up) to 90 (Horizontal)
+        "theta2": (0, math.pi ),  # Shoulder:  0 to 180 (Horizontal)
         "theta3": (
             -math.pi / 2,
             math.pi / 2,
@@ -69,10 +66,10 @@ def calculate_ik(x, y, z):
 # --- Trajectory Generator ---
 def generate_minimum_jerk_trajectory(start_angles, end_angles, time_step=0.02):
     delta = end_angles - start_angles
-    max_delta = max(delta)
-    # may change later to add speed profiles, for now 5 rad/s is the fastest the robot can go
+    max_delta = abs(max(delta))
+    # may change later to add speed profiles, for now 3 rad/s is the fastest the robot can go
     # also the peak velocity occurs at thau = 0.5
-    total_time = 1.875 * max_delta / 3.0
+    total_time = max(0.5, 1.875 * max_delta / 1.0)
     print(f"this will take {total_time} seconds")
     t = np.arange(0, total_time + time_step, time_step)
     tau = t / total_time
@@ -83,20 +80,21 @@ def generate_minimum_jerk_trajectory(start_angles, end_angles, time_step=0.02):
 
 # --- Forward Kinematics (0 = Straight Up) ---
 def get_joint_positions(theta1, theta2, theta3):
-    # Origin
     x0, y0, z0 = 0, 0, 0
-    # Shoulder Joint
-    x1, y1, z1 = 0, 0, L_0
+    x1, y1, z1 = 0, 0, L_0 # Pedestal height
 
-    # Elbow Joint (Notice sin and cos swapped for Z and XY mapping)
-    x2 = L_1 * math.sin(theta2) * math.cos(theta1)
-    y2 = L_1 * math.sin(theta2) * math.sin(theta1)
-    z2 = L_0 + L_1 * math.cos(theta2)
+    # Elbow Joint
+    r1 = L_1 * math.cos(theta2)
+    x2 = r1 * math.cos(theta1)
+    y2 = r1 * math.sin(theta1)
+    z2 = L_0 + L_1 * math.sin(theta2)
 
-    # Wrist/End Effector
-    x3 = (L_1 * math.sin(theta2) + L_2 * math.sin(theta2 + theta3)) * math.cos(theta1)
-    y3 = (L_1 * math.sin(theta2) + L_2 * math.sin(theta2 + theta3)) * math.sin(theta1)
-    z3 = L_0 + L_1 * math.cos(theta2) + L_2 * math.cos(theta2 + theta3)
+    # End Effector (Wrist)
+    # The global angle of the second link is (theta2 + theta3)
+    r2 = r1 + L_2 * math.cos(theta2 + theta3)
+    x3 = r2 * math.cos(theta1)
+    y3 = r2 * math.sin(theta1)
+    z3 = z2 + L_2 * math.sin(theta2 + theta3)
 
     return [x0, x1, x2, x3], [y0, y1, y2, y3], [z0, z1, z2, z3]
 
@@ -115,7 +113,7 @@ if __name__ == "__main__":
         )
 
         # PERFECTLY STRAIGHT UP ZERO REFERENCE
-        home_angles = np.array([0.0, 0.0, 0.0])
+        home_angles = np.array([0.0, math.pi/2, 0.0])
 
         try:
             print(f"Calculating trajectory to ({target_x}, {target_y}, {target_z})...")
