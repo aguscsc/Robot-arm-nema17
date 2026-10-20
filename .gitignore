@@ -1,0 +1,13 @@
+# Python
+__pycache__/
+*.pyc
+
+# MATLAB / Simulink
+slprj/
+*.slxc
+*.asv
+*.autosave
+
+# OS
+.DS_Store
+Thumbs.db
